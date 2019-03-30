@@ -1,0 +1,25 @@
+{
+  "name": "node-react-websocket-scale-test",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "description": "",
+  "scripts": {
+    "start": "concurrently \"cd frontend && BACKEND_TARGET=localhost:3001 yarn start\" \"cd frontend && BACKEND_TARGET=localhost:3002 yarn start\" \"cd backend && PORT=3001 yarn start:watch\" \"cd backend && PORT=3002 yarn start:watch\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DylanMerigaud/Node-React-Websocket-scale-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DylanMerigaud/Node-React-Websocket-scale-test/issues"
+  },
+  "homepage": "https://github.com/DylanMerigaud/Node-React-Websocket-scale-test#readme",
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  }
+}

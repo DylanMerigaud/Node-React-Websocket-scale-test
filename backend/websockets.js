@@ -10,11 +10,13 @@ module.exports = io => {
 
   const topic = pubsub.topic(process.env.GOOGLE_PUBSUB_TOPIC);
 
+  const subscriptionName = `${process.env.GOOGLE_PUBSUB_SUBSCRIPTION}-${
+    process.env.INSTANCE_ID
+  }`;
+
   topic.get({ autoCreate: true }).then(data => {
     const topic = data[0];
-    const subscription = topic.subscription(
-      process.env.GOOGLE_PUBSUB_SUBSCRIPTION
-    );
+    const subscription = topic.subscription(subscriptionName);
     subscription
       .get({
         autoCreate: true
@@ -27,13 +29,6 @@ module.exports = io => {
             process.env.GOOGLE_PUBSUB_SUBSCRIPTION
           }" Subscription from "${process.env.GOOGLE_PUBSUB_TOPIC}" Topic`
         );
-
-        // Uncomment to test Sending messages
-
-        // topic.publish(
-        //   new WebsocketMessage("test", { sample: "data" }).toBuffer(),
-        //   (err, messageId) => console.log(`Message ${messageId} published.`)
-        // );
       });
 
     const onMessage = message => {

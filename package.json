@@ -7,7 +7,13 @@
   ],
   "description": "",
   "scripts": {
-    "start": "concurrently \"cd frontend && PORT=3000 REACT_APP_BACKEND_TARGET=http://localhost:3002 yarn start\" \"cd frontend && PORT=3001 REACT_APP_BACKEND_TARGET=http://localhost:3002 yarn start\" \"cd backend && PORT=3002 yarn start:watch\"",
+    "start": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
+    "start:frontend": "concurrently \"yarn start:frontend-1\" \"yarn start:frontend-2\"",
+    "start:frontend-1": "cd frontend && PORT=3000 REACT_APP_BACKEND_TARGET=http://localhost:3002 yarn start",
+    "start:frontend-2": "cd frontend && PORT=3001 REACT_APP_BACKEND_TARGET=http://localhost:3003 yarn start",
+    "start:backend": "concurrently \"yarn start:backend-1\" \"yarn start:backend-2\"",
+    "start:backend-1": "cd backend && PORT=3002 INSTANCE_ID=1 yarn start:watch",
+    "start:backend-2": "cd backend && PORT=3003 INSTANCE_ID=2 yarn start:watch",
     "heroku-prebuild": "echo \"${GOOGLE_APPLICATION_CREDENTIALS_CONTENT}\" > \"${GOOGLE_APPLICATION_CREDENTIALS}\""
   },
   "repository": {

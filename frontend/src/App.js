@@ -51,17 +51,14 @@ const App = () => {
     },
     [messages]
   );
-  socket.on("newMessage", handleNewMessageFromWS);
 
   const handleMessagesFromWS = useCallback(messages => {
     setMessages((messages || []).sort(message => message.date));
   }, []);
-  socket.on("messages", handleMessagesFromWS);
 
   const handleClearMessagesFromWS = useCallback(messages => {
     setMessages([]);
   }, []);
-  socket.on("clearMessages", handleClearMessagesFromWS);
 
   const handleClear = useCallback(e => {
     socket.emit("clearMessages");
@@ -75,6 +72,22 @@ const App = () => {
   useEffect(() => {
     messageInputRef.current.focus();
   }, []);
+
+  const handleWindowFocus = useCallback(e => {
+    e.preventDefault();
+    messageInputRef.current.focus();
+  }, []);
+  useEffect(() => {
+    window.addEventListener("focus", handleWindowFocus, true);
+    return () => {
+      window.removeEventListener("focus", handleWindowFocus, true);
+    };
+  }, []);
+  useEffect(() => {
+    socket.on("newMessage", handleNewMessageFromWS);
+    socket.on("messages", handleMessagesFromWS);
+    socket.on("clearMessages", handleClearMessagesFromWS);
+  }, [handleNewMessageFromWS, handleMessagesFromWS, handleClearMessagesFromWS]);
 
   return (
     <div
@@ -91,7 +104,8 @@ const App = () => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          padding: 10
+          padding: 10,
+          overflowY: "auto"
         }}
       >
         {messages.map(message => {

@@ -89,5 +89,5 @@ function onListening() {
  * Socket.io
  */
 
-var io = app.io;
-io.attach(server);
+var io = require("socket.io")(server);
+require("../websockets")(io);

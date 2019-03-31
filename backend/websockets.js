@@ -1,12 +1,9 @@
-var socket_io = require("socket.io");
 const { PubSub } = require("@google-cloud/pubsub");
 
 var WebsocketMessage = require("./libs/WebsocketMessage");
 var Message = require("./models/Message");
 
-module.exports = app => {
-  var io = socket_io();
-  app.io = io;
+module.exports = io => {
   var websocketClientCount = 0;
 
   const pubsub = new PubSub({ projectId: process.env.GOOGLE_PUBSUB_ID });

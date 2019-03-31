@@ -5,9 +5,6 @@ var cors = require("cors");
 
 const mongoose = require("mongoose");
 
-const websockets = require("./websockets");
-var Message = require("./models/Message");
-
 require("dotenv").config();
 
 var app = express();
@@ -20,6 +17,8 @@ app.use(cookieParser());
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
-websockets(app);
+app.get("/test", (req, res) => {
+  res.send("test");
+});
 
 module.exports = app;

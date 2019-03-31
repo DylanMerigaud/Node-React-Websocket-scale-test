@@ -7,7 +7,8 @@
   ],
   "description": "",
   "scripts": {
-    "start": "concurrently \"cd frontend && BACKEND_TARGET=localhost:3001 yarn start\" \"cd frontend && BACKEND_TARGET=localhost:3002 yarn start\" \"cd backend && PORT=3001 yarn start:watch\" \"cd backend && PORT=3002 yarn start:watch\""
+    "start": "concurrently \"cd frontend && REACT_APP_BACKEND_TARGET=http://localhost:3001 yarn start\" \"cd frontend && REACT_APP_BACKEND_TARGET=http://localhost:3002 yarn start\" \"cd backend && PORT=3001 yarn start:watch\" \"cd backend && PORT=3002 yarn start:watch\"",
+    "dev": "concurrently \"cd frontend && PORT=3000 REACT_APP_BACKEND_TARGET=http://localhost:3002 yarn start\" \"cd frontend && PORT=3001 REACT_APP_BACKEND_TARGET=http://localhost:3002 yarn start\" \"cd backend && PORT=3002 yarn start:watch\""
   },
   "repository": {
     "type": "git",

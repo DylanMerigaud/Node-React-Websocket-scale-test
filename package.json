@@ -14,7 +14,7 @@
     "start:backend": "concurrently \"yarn start:backend-1\" \"yarn start:backend-2\"",
     "start:backend-1": "cd backend && PORT=3002 INSTANCE_ID=1 yarn start:watch",
     "start:backend-2": "cd backend && PORT=3003 INSTANCE_ID=2 yarn start:watch",
-    "heroku-prebuild": "echo \"${GOOGLE_APPLICATION_CREDENTIALS_CONTENT}\" > \"${GOOGLE_APPLICATION_CREDENTIALS}\""
+    "heroku-prebuild": "printf \"%s\" \"${GOOGLE_APPLICATION_CREDENTIALS_CONTENT}\" > \"${GOOGLE_APPLICATION_CREDENTIALS}\""
   },
   "repository": {
     "type": "git",

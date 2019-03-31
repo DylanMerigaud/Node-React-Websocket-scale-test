@@ -34,7 +34,18 @@ module.exports = io => {
     const onMessage = message => {
       const websocketMessage = WebsocketMessage.fromBuffer(message.data);
       console.log(`Message ${message.id} received : ${websocketMessage}`);
-      io.emit(websocketMessage.eventName, websocketMessage.payload);
+      const { callbackAdditionalData } = message.attributes || {};
+      let callbackAdditionalDataParsed = undefined;
+      try {
+        callbackAdditionalDataParsed = JSON.parse(callbackAdditionalData);
+      } catch (error) {
+        callbackAdditionalDataParsed = undefined;
+      }
+      io.emit(
+        websocketMessage.eventName,
+        websocketMessage.payload,
+        callbackAdditionalDataParsed
+      );
       message.ack();
     };
 
@@ -42,25 +53,28 @@ module.exports = io => {
       websocketClientCount += 1;
       console.log(`A user connected (total: ${websocketClientCount})`);
 
-      socket.on("message", data => {
+      socket.on("message", (data, callbackAdditionalData) => {
         console.log(
           `Received new Message from client: ${JSON.stringify(data)}`
         );
         const message = new Message(data);
         message.save().then(savedMessage => {
-          topic.publish(
-            new WebsocketMessage("newMessage", savedMessage).toBuffer(),
-            (err, messageId) => console.log(`Message ${messageId} published.`)
-          );
+          topic
+            .publish(
+              new WebsocketMessage("newMessage", savedMessage).toBuffer(),
+              {
+                callbackAdditionalData: JSON.stringify(callbackAdditionalData)
+              }
+            )
+            .then(messageId => console.log(`Message ${messageId} published.`));
         });
       });
 
       socket.on("clearMessages", () => {
         Message.remove({}).then(() => {
-          topic.publish(
-            new WebsocketMessage("clearMessages").toBuffer(),
-            (err, messageId) => console.log(`Message ${messageId} published.`)
-          );
+          topic
+            .publish(new WebsocketMessage("clearMessages").toBuffer())
+            .then(messageId => console.log(`Message ${messageId} published.`));
         });
       });
 

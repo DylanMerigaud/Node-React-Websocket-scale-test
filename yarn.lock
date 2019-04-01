@@ -1001,6 +1001,11 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
+"@meanie/mongoose-to-json@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@meanie/mongoose-to-json/-/mongoose-to-json-2.3.0.tgz#9a2e14dbb3241bf6a904ee600d8e829ad5e12272"
+  integrity sha512-GDBpg/V8gO+v0CisFf+VPxKTUFI4T1Dwz1+GD3yPMPzlMEzJzR5F/+F3+Fsnpl6ixCeHIaR/ukohYJA0Z9Dsaw==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

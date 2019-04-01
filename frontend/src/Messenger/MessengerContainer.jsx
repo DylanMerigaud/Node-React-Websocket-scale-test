@@ -6,6 +6,21 @@ import Messenger from "./Messenger";
 
 const socket = io(process.env.REACT_APP_BACKEND_TARGET);
 
+const removeDuplicateMessages = messages => {
+  var obj = {};
+
+  for (var i = 0, len = messages.length; i < len; i++)
+    obj[messages[i]["id"] || messages[i]["tempId"]] = messages[i];
+
+  messages = [];
+  for (var key in obj) messages.push(obj[key]);
+
+  return messages;
+};
+
+const sortMessages = messages =>
+  messages.sort((a, b) => new Date(a.date) - new Date(b.date));
+
 const MessengerContainer = () => {
   const [message, setMessage] = useState("");
   const [userUsername, setUserUsername] = useState(
@@ -27,12 +42,12 @@ const MessengerContainer = () => {
       const temporaryMessage = {
         content: message,
         author: userUsername,
-        date: Date.now(),
+        date: new Date().toISOString(),
         tempId: shortid.generate()
       };
       const { tempId, ...mesage } = temporaryMessage;
       socket.emit("message", mesage, { tempId });
-      setMessages([...messages, temporaryMessage]);
+      setMessages(prevMessages => [...prevMessages, temporaryMessage]);
       setMessage("");
     },
     [message, userUsername]
@@ -40,27 +55,31 @@ const MessengerContainer = () => {
 
   const handleNewMessageFromWS = useCallback(
     (newMessage, callbackAdditionalData) => {
-      let replacedAtLeastOnce = false;
-      const replaceMessageCb = message => {
-        if (message.tempId === callbackAdditionalData.tempId) {
-          replacedAtLeastOnce = true;
-          return newMessage;
-        } else return message;
-      };
-      const replacedMessages = messages.map(replaceMessageCb);
-      const resultMessages = replacedAtLeastOnce
-        ? replacedMessages
-        : [...messages, newMessage];
-      setMessages(resultMessages.sort(message => message.date));
+      const removeMessageWithSameTempId = message =>
+        message.tempId !== callbackAdditionalData.tempId;
+      setMessages(prevMessages =>
+        sortMessages(
+          removeDuplicateMessages([
+            ...(callbackAdditionalData.tempId
+              ? prevMessages.filter(removeMessageWithSameTempId)
+              : prevMessages),
+            { ...newMessage, tempId: callbackAdditionalData.tempId }
+          ])
+        )
+      );
     },
-    [messages]
+    []
   );
 
-  const handleMessagesFromWS = useCallback(messages => {
-    setMessages((messages || []).sort(message => message.date));
+  const handleMessagesFromWS = useCallback(remoteMessages => {
+    setMessages(prevMessages =>
+      sortMessages(
+        removeDuplicateMessages([...prevMessages, ...(remoteMessages || [])])
+      )
+    );
   }, []);
 
-  const handleClearMessagesFromWS = useCallback(messages => {
+  const handleClearMessagesFromWS = useCallback(() => {
     setMessages([]);
   }, []);
 

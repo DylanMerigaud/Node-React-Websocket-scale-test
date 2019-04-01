@@ -55,7 +55,7 @@ const Messenger = props => {
               style={{
                 alignSelf: messageFromUser ? "flex-end" : "flex-start"
               }}
-              key={message._id || message.tempId}
+              key={message.tempId || message.id}
             />
           );
         })}
@@ -103,4 +103,4 @@ const useStyles = makeStyles({
   messageInput: { flexGrow: 1 }
 });
 
-export default Messenger;
+export default React.memo(Messenger);

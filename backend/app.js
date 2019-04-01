@@ -4,6 +4,8 @@ var logger = require("morgan");
 var cors = require("cors");
 
 const mongoose = require("mongoose");
+const toJson = require("@meanie/mongoose-to-json");
+mongoose.plugin(toJson);
 
 require("dotenv").config();
 

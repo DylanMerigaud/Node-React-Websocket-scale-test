@@ -15,12 +15,13 @@ var stringToColour = str => {
 
 const Message = props => {
   const {
-    message: { author, content },
+    message: { author, content, id },
     userUsername,
     style,
     ...restProps
   } = props;
 
+  const isOffline = !id;
   const textColor = useMemo(() => stringToColour(author), [author]);
 
   return (
@@ -31,8 +32,8 @@ const Message = props => {
         ...style
       }}
       {...restProps}
-    >{`${author}: ${content}`}</div>
+    >{`${isOffline ? "/!\\ " : ""}${author}: ${content}`}</div>
   );
 };
 
-export default Message;
+export default React.memo(Message);

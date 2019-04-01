@@ -1,1 +1,1 @@
-web: node backend/bin/www
+web: INSTANCE_ID=$HEROKU_DYNO_ID node backend/bin/www
